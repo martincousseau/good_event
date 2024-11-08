@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  h1 Conversation: #{conversation.title}
+  h1 Destinataire: #{destinataire}
+
+  ul#messageList
+    each message in messages
+      li
+        span= message.sender_id.username
+        p= message.content
+        small= message.sent_at
+
+  form#messageForm
+    textarea(name='messageContent', placeholder='Tapez un message...')
+    button(type='submit') Envoyer
+
+  script.
+    var socket = io();
+    
+    // Rejoindre la conversation
+    socket.emit('joinConversation', '#{conversation._id}');
+
+    // Envoi de message
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var messageContent = document.querySelector('textarea[name="messageContent"]').value;
+      socket.emit('sendMessage', {
+        conversationId: '#{conversation._id}',
+        content: messageContent,
+        senderId: '#{currentUserId}'
+      });
+    });
+
+    // Écouter les nouveaux messages
+    socket.on('newMessage', function(message) {
+      var messageList = document.getElementById('messageList');
+      var newMessage = document.createElement('li');
+      newMessage.innerHTML = `<span>${message.sender_id.username}</span><p>${message.content}</p><small>${message.sent_at}</small>`;
+      messageList.appendChild(newMessage);
+    });

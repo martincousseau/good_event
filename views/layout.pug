@@ -62,6 +62,8 @@ html(lang='en')
         div.navbar-links
           if user
             a(href="/event") Créer un évènement
+            a(href="/create-conversation") Créer une conversation
+            a(href="/conversation") Mes conversations
             form.form-inline(method='POST' action="/logout")
               a(href="/account") Mon compte
               button.btn.btn-primary(type="submit") Déconnexion

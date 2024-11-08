@@ -3,8 +3,8 @@ const express = require('express');
 const path = require('path');
 const session = require("express-session");
 const {mongoose} = require('mongoose');
-
-
+const http = require('http');
+const socketIo = require('socket.io');
 const app = express();
 const port = 3000;
 
@@ -22,10 +22,13 @@ const logoutRouter = require("./routes/logout.js");
 const eventRouter = require("./routes/event.js");
 const editEventRouter = require("./routes/edit-event.js");
 const favoriseEventRouter = require('./routes/favorise-event');
+const createConversationRouter = require('./routes/create-conversation.js');
+const conversationRouter = require('./routes/conversation.js');
 
-// middlewares
+// Middlewares
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'top secret',
@@ -49,7 +52,12 @@ app.use('/logout', logoutRouter);
 app.use('/event', eventRouter);
 app.use('/edit-event', editEventRouter);
 app.use('/favorise-event', favoriseEventRouter);
+app.use('/create-conversation', createConversationRouter);
+app.use('/conversation', conversationRouter);
 
+// Sockets
+const server = http.createServer(app);
+const io = socketIo(server);
 
 // Start server
 app.listen(port, () => {

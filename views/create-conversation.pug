@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  head
+    title Créer une conversation
+  body
+    form(action='/create-conversation', method='post')
+      label(for='title') Titre de la conversation:
+      input(type='text', name='title', required)
+
+      .form-group
+        label(for='user2Id') Choisir un utilisateur:
+        select(name='user2Id', id='user2Id', required class='form-control')
+          option(value='' disabled selected) Choisir un utilisateur...
+          each user in users
+            option(value=user._id) #{user.username}
+
+      .form-group
+        label(for='initialMessage') Message initial:
+        textarea(name='initialMessage', required)
+
+      button(type='submit') Créer

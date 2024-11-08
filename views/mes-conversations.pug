@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1 Mes Conversations
+
+  if conversations && conversations.length > 0
+    ul#conversationsList
+      each conversation in conversations
+        li
+          a(href=`/conversation/${conversation._id}`) #{conversation.title}
+          p Participants: 
+            if conversation.participants && conversation.participants.length > 0
+              each participant, index in conversation.participants
+                span= participant.username
+                if index < conversation.participants.length - 1
+                  | , 
+            else
+              p Aucun participant
+
+          small Créée le: #{conversation.created_at.toLocaleDateString()}
+
+  else
+    p Vous n'avez pas encore de conversations.
